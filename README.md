@@ -1,58 +1,94 @@
-# Credit Card Fraud Detection
+﻿# Credit Card Fraud Detection
 
-**Author:** Aaryan Rathod  
+Author: Aaryan Rathod
 
-A comprehensive machine learning project for detecting fraudulent credit card transactions using multiple advanced techniques including hyperparameter tuning, ensemble methods, and class imbalance handling.
+A machine learning project for detecting fraudulent credit card transactions using class imbalance handling, hyperparameter optimization, and ensemble learning.
 
 ## Overview
 
-This project implements a complete fraud detection pipeline that addresses the critical challenge of imbalanced binary classification. The dataset contains ~284,000 transactions with only ~0.17% fraud cases, making this a highly imbalanced classification problem.
+This project builds and compares multiple fraud detection pipelines on a highly imbalanced dataset.
 
-**Key Contributions:**
-- Multiple state-of-the-art approaches (baseline, SMOTE, ADASYN, Random Oversampling)
-- Hyperparameter optimization using Optuna for three models
+- Total transactions: 284,807
+- Fraud cases: 492 (0.17 percent)
+- Legitimate cases: 284,315 (99.83 percent)
+- Imbalance ratio: 1:578
+
+Main focus areas:
+
+- Resampling strategies for imbalanced data
+- Model optimization with Optuna
 - Ensemble learning with soft voting
-- Probability calibration for improved confidence estimates
-- Focus on recall and PR-AUC for better fraud detection
-
-## Project Structure
-
-```
-├── main.py                          # Main training pipeline with hyperparameter tuning
-├── fraud_model_pipeline.py          # Baseline+ ensemble with probability calibration
-├── confusion_matrices.py            # Comprehensive resampling comparison
-├── optuna_optimization.py           # Bayesian hyperparameter optimization
-├── xgb_aucpr.py                     # XGBoost with AUCPR optimization
-├── creditcard.csv                   # Dataset (not included in repo)
-├── requirements.txt                 # Python dependencies
-├── .gitignore                       # Git ignore rules
-├── LICENSE                          # MIT License
-└── README.md                         # This file
-```
+- Probability calibration and threshold tuning
+- PR-AUC and recall oriented evaluation
 
 ## Dataset
 
-**Credit Card Fraud Detection Dataset**
-- **Source:** Kaggle (European Credit Card Transactions)
-- **Size:** 284,807 transactions
-- **Features:** 30 PCA-transformed features + Time + Amount
-- **Target:** Binary classification (Fraud: 492 cases)
-- **Class Imbalance:** 99.83% legitimate, 0.17% fraud
+Credit Card Fraud Detection Dataset
+
+- Source: Kaggle (European credit card transactions)
+- Features: PCA-transformed variables plus Time and Amount
+- Target: Class (0 = legitimate, 1 = fraud)
 
 | Metric | Value |
-|--------|-------|
+| --- | --- |
 | Total Transactions | 284,807 |
-| Fraudulent Cases | 492 (0.17%) |
-| Legitimate Cases | 284,315 (99.83%) |
+| Fraudulent Cases | 492 (0.17 percent) |
+| Legitimate Cases | 284,315 (99.83 percent) |
 | Imbalance Ratio | 1:578 |
+
+## Project Structure
+
+```text
+main/
+|-- main.py                    # Main pipeline with model training and tuning
+|-- fraud_model_pipeline.py    # Baseline+ calibrated ensemble pipeline
+|-- confusion_matrices.py      # Resampling and confusion matrix comparisons
+|-- optuna_optimization.py     # Bayesian hyperparameter optimization
+|-- xgb_aucpr.py               # XGBoost pipeline optimized for PR-AUC
+|-- requirements.txt           # Python dependencies
+|-- QUICKSTART.md              # Quick execution guide
+|-- RESULTS.md                 # Detailed results and analysis
+|-- LICENSE                    # MIT License
+`-- README.md                  # Project documentation
+```
+
+## Methods Implemented
+
+Resampling techniques:
+
+- No resampling (baseline)
+- RandomOverSampler
+- SMOTE
+- ADASYN
+
+Models:
+
+- Logistic Regression
+- Random Forest
+- XGBoost
+
+Advanced techniques:
+
+- Optuna hyperparameter optimization
+- Soft voting ensembles
+- Isotonic probability calibration
+- Threshold optimization for recall targets
 
 ## Best Results
 
-### 1. **Optuna Voting Ensemble (BEST OVERALL)**
-**Approach:** Bayesian hyperparameter optimization with soft voting ensemble
+### 1) Optuna Voting Ensemble (Best Overall)
 
-**Models & Configuration:**
-- **XGBoost** (weight: 2×)
+Approach: Bayesian optimization for model hyperparameters followed by soft voting ensemble.
+
+Ensemble composition:
+
+- XGBoost (weight: 2)
+- Random Forest (weight: 1)
+- Logistic Regression (weight: 1)
+
+Best configuration found:
+
+- XGBoost:
   - max_depth: 8
   - learning_rate: 0.061
   - n_estimators: 915
@@ -60,130 +96,107 @@ This project implements a complete fraud detection pipeline that addresses the c
   - colsample_bytree: 0.867
   - gamma: 0.011
   - scale_pos_weight: 578
-
-- **Random Forest** (weight: 1×)
+- Random Forest:
   - n_estimators: 291
   - max_depth: 7
   - min_samples_split: 14
   - min_samples_leaf: 9
-  - max_features: 'log2'
-
-- **Logistic Regression** (weight: 1×)
+  - max_features: log2
+- Logistic Regression:
   - C: 7.601
-  - solver: 'lbfgs'
-  - class_weight: 'balanced'
+  - solver: lbfgs
+  - class_weight: balanced
 
-**Performance Metrics:**
+Performance summary:
+
 | Metric | Score |
-|--------|-------|
-| **F1 Macro** | **0.9206** |
-| **Precision** | 0.88+ |
-| **Recall** | 0.85+ |
-| **AUPRC** | 0.92+ |
-| **AUROC** | 0.95+ |
+| --- | --- |
+| F1 Macro | 0.9206 |
+| Precision | 0.88+ |
+| Recall | 0.85+ |
+| PR-AUC | 0.92+ |
+| AUROC | 0.95+ |
 
-**Confusion Matrix (Validation Set):**
-```
+Validation confusion matrix (approximate):
+
+```text
                  Predicted
               Legitimate  Fraud
-Actual Legitimate    ~52,000     ~300
-       Fraud         ~100       ~90
+Actual Legitimate    ~52,000    ~300
+Actual Fraud            ~100     ~90
 ```
 
-**Key Advantages:**
-- Superior generalization through ensemble
-- Robust to different data distributions
-- Soft voting leverages strengths of each model
-- Well-balanced precision-recall trade-off
+### 2) XGBoost + SMOTE + Optuna
 
----
+Approach: Single XGBoost model with SMOTE resampling and PR-AUC focused tuning.
 
-### 2. **XGBoost + SMOTE + Optuna**
+Performance summary:
 
-**Approach:** Single XGBoost model with SMOTE resampling and AUCPR optimization
-
-**Configuration:**
-- max_depth: 8
-- learning_rate: 0.061
-- n_estimators: 915
-- subsample: 0.783
-- colsample_bytree: 0.867
-- gamma: 0.011
-- eval_metric: 'aucpr'
-
-**Performance:**
 | Metric | Score |
-|--------|-------|
-| **PR-AUC** | **0.92+** |
-| **Improvement over Baseline** | **15-20%** |
-| **Recall** | 0.80+ |
-| **Precision** | 0.90+ |
+| --- | --- |
+| PR-AUC | 0.92+ |
+| Improvement vs Baseline | 15 to 20 percent |
+| Recall | 0.80+ |
+| Precision | 0.90+ |
 
-**Advantages:**
-- AUCPR metric is superior for imbalanced data
-- SMOTE generates synthetic minority samples
-- Single model (easier deployment)
-- Excellent fraud detection rate
+### 3) Fraud Detection Baseline+
 
----
+Approach: Calibrated ensemble with threshold optimization.
 
-### 3. **Fraud Detection Baseline+**
+Configuration highlights:
 
-**Approach:** Calibrated ensemble with threshold optimization
-
-**Configuration:**
-- Logistic Regression (Pipeline with StandardScaler + CalibrationCV)
-- Random Forest (400 estimators, balanced subsample weights)
-- Soft voting (weights: [1.0, 1.2])
-- Isotonic probability calibration
+- Logistic Regression pipeline with StandardScaler and calibration
+- Random Forest with class balancing
+- Soft voting weights: [1.0, 1.2]
+- Isotonic calibration
 - Target recall: 0.85
 
-**Performance:**
+Performance summary:
+
 | Metric | Score |
-|--------|-------|
-| **Precision** | 0.87 |
-| **Recall** | 0.85 |
-| **F1-Score** | 0.86 |
-| **AUPRC** | 0.91 |
-| **AUROC** | 0.94 |
-
-**Key Features:**
-- Probability calibration improves confidence estimates
-- Threshold optimization meets business requirements (target recall)
-- Cost-sensitive learning with class weights
-- Optimal balance between catching fraud and false alarms
-
----
+| --- | --- |
+| Precision | 0.87 |
+| Recall | 0.85 |
+| F1 Score | 0.86 |
+| PR-AUC | 0.91 |
+| AUROC | 0.94 |
 
 ## Model Comparison Summary
 
 | Approach | Best Metric | Score | Notes |
-|----------|------------|-------|-------|
-| **Optuna Ensemble** | F1 Macro | 0.9206 | ⭐ Best overall |
-| **XGBoost + SMOTE** | PR-AUC | 0.92+ | Single model, easy deploy |
-| **Baseline+** | Recall | 0.85 | Best for recall-focused |
-| **Standard XGBoost** | Accuracy | 0.998 | Misleading due to imbalance |
-| **Baseline No Resampling** | F1 | 0.60- | Poor fraud detection |
+| --- | --- | --- | --- |
+| Optuna Ensemble | F1 Macro | 0.9206 | Best overall |
+| XGBoost + SMOTE | PR-AUC | 0.92+ | Single model, easier deployment |
+| Baseline+ | Recall | 0.85 | Useful for recall-focused cases |
+| Standard XGBoost | Accuracy | 0.998 | Misleading under class imbalance |
+| Baseline (No Resampling) | F1 | 0.60 to 0.70 | Weak fraud capture |
 
-## Resampling Techniques Comparison
-
-All techniques tested with LogReg, RandomForest, and XGBoost:
+## Resampling Comparison
 
 | Technique | Best Model | Improvement | Notes |
-|-----------|-----------|-------------|-------|
-| **SMOTE** | XGBoost | +18% | Synthetic oversampling |
-| **ADASYN** | XGBoost | +15% | Adaptive synthetic sampling |
-| **RandomOverSampler** | RandomForest | +12% | Simple duplication |
-| **No Resampling** | All | Baseline | Poor fraud recall |
+| --- | --- | --- | --- |
+| SMOTE | XGBoost | +18 percent | Synthetic minority generation |
+| ADASYN | XGBoost | +15 percent | Adaptive synthetic sampling |
+| RandomOverSampler | Random Forest | +12 percent | Duplicates minority samples |
+| No Resampling | - | Baseline | Lower fraud recall |
 
-**Finding:** SMOTE generally outperforms other techniques by creating synthetic examples in the feature space rather than simple duplication.
+Key finding: SMOTE usually outperformed simple duplication methods by producing synthetic minority points in feature space.
+
+## Why PR-AUC Matters for Fraud Detection
+
+In extreme class imbalance, accuracy and AUROC can look strong while fraud detection quality is still weak.
+
+- Accuracy can be very high by predicting mostly legitimate transactions.
+- AUROC may remain high due to dominant negative class size.
+- PR-AUC gives a more practical picture of fraud precision and fraud recall trade-off.
 
 ## Installation
 
-### Requirements
+Requirements:
+
 - Python 3.8+
 - scikit-learn >= 1.0
-- XGBoost >= 1.5
+- xgboost >= 1.5
 - pandas >= 1.3
 - numpy >= 1.21
 - imbalanced-learn >= 0.8
@@ -191,212 +204,90 @@ All techniques tested with LogReg, RandomForest, and XGBoost:
 - matplotlib >= 3.4
 - seaborn >= 0.11
 
-### Setup
+Setup:
 
 ```bash
-# Clone repository
-git clone https://github.com/aaryanrathod/CreditCardFraud.git
-cd CreditCardFraud/main
+git clone https://github.com/aaryanrathod/Credit-card-fraud-detection.git
+cd Credit-card-fraud-detection/main
 
-# Create virtual environment (recommended)
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Install dependencies
+# Windows PowerShell
+venv\Scripts\Activate.ps1
+
+# Linux/macOS
+# source venv/bin/activate
+
 pip install -r requirements.txt
 ```
 
 ## Usage
 
-### Run Individual Scripts
+Run any pipeline from the main folder:
 
-1. **Main Pipeline** (Hyperparameter tuning with XGBoost):
 ```bash
 python main.py
-```
-
-2. **Fraud Detection Baseline+** (Ensemble with calibration):
-```bash
 python fraud_model_pipeline.py
-```
-
-3. **Confusion Matrices Comparison** (All resampling techniques):
-```bash
 python confusion_matrices.py
-```
-
-4. **Optuna Optimization** (Best ensemble approach):
-```bash
 python optuna_optimization.py
-```
-
-5. **XGBoost AUCPR** (Single model optimization):
-```bash
 python xgb_aucpr.py
 ```
 
-### Expected Output
+Expected outputs include:
 
-Each script generates:
-- Classification reports (Precision, Recall, F1-Score)
+- Classification reports
 - Confusion matrices
-- Precision-Recall curves
-- Performance metrics
-
-## Key Findings
-
-### 1. Impact of Resampling
-- **Without resampling:** F1 scores: 0.60-0.70
-- **With SMOTE:** F1 scores: 0.78-0.88
-- **With Optuna + Ensemble:** F1 scores: 0.90+
-
-### 2. Feature Space vs. Duplicated Examples
-SMOTE (synthetic) significantly outperforms RandomOverSampler (duplication):
-- **SMOTE F1:** 0.85+
-- **RandomOverSampler F1:** 0.77
-
-### 3. Ensemble > Single Models
-Soft voting ensemble consistently beats individual models:
-- **Ensemble F1:** 0.92
-- **Best Single Model F1:** 0.88
-- **Improvement:** +4.5%
-
-### 4. Metric Selection Matters
-- **Accuracy:** 0.998 (misleading due to imbalance)
-- **F1 Score:** 0.92 (better for imbalance)
-- **PR-AUC:** 0.92 (best for imbalanced classification)
-- **Recall:** 0.85 (critical for fraud detection)
-
-### 5. Hyperparameter Tuning Impact
-Optuna optimization provides:
-- **F1 improvement:** +8% over default parameters
-- **PR-AUC improvement:** +6%
-- **More robust predictions**
-
-## Model Evaluation Metrics
-
-### Confusion Matrix
-```
-                 Predicted
-              Legitimate  Fraud
-Actual Legitimate    TN       FP
-       Fraud         FN       TP
-```
-
-### Key Metrics Explained
-- **Precision:** Of predicted frauds, how many are actual frauds?
-  - High precision = few false alarms
-  - Formula: TP / (TP + FP)
-
-- **Recall:** Of actual frauds, how many did we catch?
-  - High recall = few missed frauds
-  - Formula: TP / (TP + FN)
-
-- **F1-Score:** Harmonic mean of precision and recall
-  - Formula: 2 × (Precision × Recall) / (Precision + Recall)
-
-- **PR-AUC:** Area under Precision-Recall curve
-  - Better than ROC-AUC for imbalanced data
-  - Ranges from 0 to 1 (higher is better)
-
-- **AUROC:** Area under ROC curve
-  - Measures true positive vs false positive rate
-  - Can be misleading for imbalanced data
-
-### Why PR-AUC > AUROC for Fraud Detection
-In the imbalanced fraud case:
-- **AUROC:** 0.95+ (misleadingly high due to 99.8% legitimate)
-- **PR-AUC:** 0.92 (more realistic performance measure)
-- **Precision-Recall:** Better reflects actual fraud detection ability
+- Precision-recall curves
+- PR-AUC, recall, precision, F1, and AUROC metrics
 
 ## Recommendations
 
-### For Production Deployment:
-Use the **Optuna Voting Ensemble** because:
-1. Highest F1 score (0.92)
-2. Best all-around performance
-3. Robust to data variations
-4. Well-calibrated probabilities
-5. Optimal balance of precision/recall
+For production (best overall):
 
-### For Recall-Focused Scenarios:
-Use the **Baseline+ with 0.85 target recall** because:
-1. Specifically optimized for catching fraud
-2. Threshold can be adjusted
-3. Simpler than ensemble
-4. Still maintains decent precision (0.87)
+- Use the Optuna Voting Ensemble for strongest overall balance.
 
-### For Simple Deployment:
-Use **XGBoost + SMOTE** because:
-1. Single model (no ensemble complexity)
-2. Still achieves 0.92 PR-AUC
-3. Faster inference time
-4. Easier model versioning
+For recall-focused fraud catching:
+
+- Use Baseline+ with threshold tuning around target recall 0.85.
+
+For simpler deployment:
+
+- Use XGBoost + SMOTE for strong performance with lower system complexity.
 
 ## Business Impact
 
-**Cost of Fraud Prevention:**
-- Cost per false positive: $X (minor inconvenience)
-- Cost per fraud case: $1000+ (actual loss)
+Operational framing:
 
-**Model Performance (Optuna Ensemble):**
-- Catches 85%+ of fraud cases
-- False alarm rate: ~0.6%
-- Net benefit: ~98% reduction in fraud losses
+- False positives create investigation cost and customer friction.
+- False negatives create direct fraud loss.
 
-**Scalability:**
-- Handles real-time predictions
-- Batch processing capability
-- Easy A/B testing with baseline
+Observed performance impact (Optuna Ensemble):
+
+- Fraud capture: 85 percent+
+- False alarm rate: roughly 0.6 percent
+- Strong potential reduction in fraud loss in high-volume workflows
 
 ## Future Improvements
 
-1. **Temporal Features:**
-   - Add day-of-week patterns
-   - Detect time-based anomalies
-   - Track merchant behavior over time
-
-2. **Domain-Specific Features:**
-   - Distance traveled analysis
-   - Spending pattern deviations
-   - Geographic anomalies
-
-3. **Model Improvements:**
-   - Deep learning (neural networks)
-   - Isolation forests for outlier detection
-   - Reinforcement learning for optimal thresholds
-
-4. **Production Pipeline:**
-   - Model monitoring and drift detection
-   - A/B testing framework
-   - Explainability (SHAP values)
+1. Add temporal and behavioral features.
+2. Add anomaly detection alternatives (for example Isolation Forest).
+3. Introduce model monitoring and drift alerts.
+4. Add explainability workflows (for example SHAP).
+5. Create API or batch scoring deployment templates.
 
 ## References
 
-- **XGBoost:** Chen, T., & Guestrin, C. (2016). XGBoost: A Scalable Tree Boosting System
-- **SMOTE:** Chawla, N. V., et al. (2002). SMOTE: Synthetic Minority Over-sampling Technique
-- **Optuna:** Akiba, T., et al. (2019). Optuna: A Next-generation Hyperparameter Optimization Framework
-- **Imbalanced Learning:** He, H., & Garcia, E. A. (2009). Learning from Imbalanced Data
+- Chen, T., and Guestrin, C. (2016). XGBoost: A Scalable Tree Boosting System.
+- Chawla, N. V., et al. (2002). SMOTE: Synthetic Minority Over-sampling Technique.
+- Akiba, T., et al. (2019). Optuna: A Next-generation Hyperparameter Optimization Framework.
+- He, H., and Garcia, E. A. (2009). Learning from Imbalanced Data.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Dataset sourced from Kaggle
-- Machine Learning algorithms from scikit-learn, XGBoost, and imbalanced-learn
-- Hyperparameter optimization using Optuna framework
+This project is licensed under the MIT License. See LICENSE for details.
 
 ## Contact
 
-**Author:** Aaryan Rathod  
-**Project:** Credit Card Fraud Detection  
-**Date:** 2026
-
----
-
-**Last Updated:** March 2026  
-
- 
- 
+Author: Aaryan Rathod
+Project: Credit Card Fraud Detection
+Last Updated: March 2026
