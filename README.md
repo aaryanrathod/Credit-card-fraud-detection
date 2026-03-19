@@ -1,7 +1,6 @@
 # Credit Card Fraud Detection
 
 **Author:** Aaryan Rathod  
-**Date:** 2025
 
 A comprehensive machine learning project for detecting fraudulent credit card transactions using multiple advanced techniques including hyperparameter tuning, ensemble methods, and class imbalance handling.
 
@@ -393,9 +392,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Author:** Aaryan Rathod  
 **Project:** Credit Card Fraud Detection  
-**Date:** 2025
+**Date:** 2026
 
 ---
 
-**Last Updated:** March 2025  
-**Version:** 1.0
+**Last Updated:** March 2026  
