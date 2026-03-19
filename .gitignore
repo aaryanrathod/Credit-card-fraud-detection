@@ -1,0 +1,54 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# pytest cache
+.pytest_cache/
+.coverage
+
+# Data files
+*.csv
+!requirements.txt
+
+# Model artifacts
+*.pkl
+*.joblib
+*.h5
+*.pth
+
+# Logs
+*.log
+
+# Build and distribution
+dist/
+build/
+*.egg-info/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Project specific
+results/
+plots/
+models/
