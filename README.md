@@ -393,9 +393,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Author:** Aaryan Rathod  
 **Project:** Credit Card Fraud Detection  
-**Date:** 2025
+**Date:** 2026
 
 ---
 
-**Last Updated:** March 2025  
-**Version:** 1.0
+**Last Updated:** March 2026  
