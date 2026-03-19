@@ -1,7 +1,6 @@
 # Credit Card Fraud Detection
 
 **Author:** Aaryan Rathod  
-**Date:** 2025
 
 A comprehensive machine learning project for detecting fraudulent credit card transactions using multiple advanced techniques including hyperparameter tuning, ensemble methods, and class imbalance handling.
 
