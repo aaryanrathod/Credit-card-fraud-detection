@@ -106,9 +106,8 @@ def plot_precision_recall_curve(y_true, y_proba, pr_auc, title):
     plt.show()
 
 
-# =====================================================================
 # BASELINE - WITHOUT RESAMPLING
-# =====================================================================
+
 def run_baseline_models(X_train, X_test, y_train, y_test):
     """Train models without any resampling."""
     print("\n" + "="*60)
@@ -146,9 +145,7 @@ def run_baseline_models(X_train, X_test, y_train, y_test):
     plot_precision_recall_curve(y_test, y_proba_xgb, pr_auc_xgb, "Baseline - XGB PR Curve")
 
 
-# =====================================================================
 # RANDOM OVERSAMPLER
-# =====================================================================
 def run_random_oversampler(X_train, X_test, y_train, y_test):
     """Train models with RandomOverSampler resampling."""
     print("\n" + "="*60)
@@ -189,9 +186,7 @@ def run_random_oversampler(X_train, X_test, y_train, y_test):
     plot_confusion_matrix(cm_xgb, "RandomOverSampler - XGBoost")
 
 
-# =====================================================================
 # SMOTE (SYNTHETIC MINORITY OVER-SAMPLING TECHNIQUE)
-# =====================================================================
 def run_smote(X_train, X_test, y_train, y_test):
     """Train models with SMOTE resampling."""
     print("\n" + "="*60)
@@ -232,9 +227,7 @@ def run_smote(X_train, X_test, y_train, y_test):
     plot_confusion_matrix(cm_xgb, "SMOTE - XGBoost")
 
 
-# =====================================================================
 # ADASYN (ADAPTIVE SYNTHETIC SAMPLING)
-# =====================================================================
 def run_adasyn(X_train, X_test, y_train, y_test):
     """Train models with ADASYN resampling."""
     print("\n" + "="*60)

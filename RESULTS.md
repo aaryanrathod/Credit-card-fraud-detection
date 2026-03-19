@@ -158,7 +158,7 @@ PR-AUC: 0.85
 
 ---
 
-### 4. HYPERPARAMETER TUNING
+## 4. HYPERPARAMETER TUNING
 
 ### 4.1 Randomized Search (Main.py)
 
